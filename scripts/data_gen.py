@@ -33,7 +33,8 @@ def parse_with_bs4(page):
 
     except IndexError:
         # This happens on an error with requested html
-        main()
+        parse_with_bs4(requests.get(
+            'https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1710000901'))
 
 
 def write_data(data, filename, path):
