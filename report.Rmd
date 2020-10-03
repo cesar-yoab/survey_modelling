@@ -1,0 +1,20 @@
+---
+title: "Monthly Canadian Election Poll"
+author: "Cesar Y. Villarreal Guzman"
+date: "03/10/2020"
+output: pdf_document
+---
+
+# Executive Summary
+
+
+# Introduction
+
+
+# Survey Methodology
+
+
+# Results and Discussion
+
+
+# Apendix
