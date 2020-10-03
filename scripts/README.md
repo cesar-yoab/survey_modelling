@@ -34,4 +34,4 @@ python data_gen.py --help
 ```
 
 Now with this data we can start generatig the actual simulation data for the survey. We recommend installing
-(rstudio)[https://rstudio.com/], or using rstudio cloud, and using it for the following steps. Open modeling_script.R in rstudio or upload to rstudio cloud. 
+[rstudio](https://rstudio.com/), or using [rstudio cloud](https://rstudio.cloud/) and using it for the following steps. Open modeling_script.R in rstudio or upload to rstudio cloud. 
