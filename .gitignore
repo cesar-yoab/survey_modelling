@@ -181,3 +181,7 @@ cython_debug/
 
 # vscode files
 .vscode/
+
+# Data files
+*.json
+*.txt

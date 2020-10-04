@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import os
 import json
 import click
+import time
 
 
 def parse_with_bs4(page):
@@ -26,7 +27,7 @@ def parse_with_bs4(page):
         # Remove instances that contain empty lists as values and
         # Only select the last item in the list of population numbers
         # this corresponds to data of Q4
-        data_clean = {k.replace("(map)", ""): v[-1]
+        data_clean = {k.replace("(map)", ""): v[-1].replace(",", "")
                       for k, v in data.items() if len(v) != 0}
 
         return data_clean
@@ -60,7 +61,7 @@ def write_profiles(data, filename, path):
 
 
 def get_profiles(api_url, params):
-    """Call profiles API 2 times to create 10,000 fake 
+    """Call profiles API 2 times to create 10,000 fake
     samples."""
     api_call = api_url + '?'
 
@@ -70,9 +71,10 @@ def get_profiles(api_url, params):
     resp = requests.get(api_call.rstrip())
 
     if resp.status_code == 200:
-        return resp.json()
+        return resp.json()['results']
 
-    return {}
+    print("Call to API returned status code: ", resp.status_code)
+    return []
 
 
 @click.command()
@@ -96,10 +98,6 @@ def main(dir, no_profiles, no_provinces):
     if not no_provinces:
         url = 'https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1710000901'
         page = requests.get(url)
-        api_url = 'https://randomuser.me/api/'
-        # Max number of results is 5000
-        params = {'results': 5000, 'nat': 'ca'}
-
         if page.status_code == 200:
             data = parse_with_bs4(page)
 
@@ -107,9 +105,18 @@ def main(dir, no_profiles, no_provinces):
 
     # Code to generate fake profile list
     if not no_profiles:
-        profiles = {}
-        for _ in range(2):
-            profiles.update(get_profiles(api_url, params))
+        api_url = 'https://randomuser.me/api/'
+        # Ask for 5000 results each with Canadian nationality
+        params = {'results': 5000, 'nat': 'ca',
+                  'exc': 'login,registered,picture'}
+
+        # The API only allows 5000 samples per call, so we make two
+        # and merge them into a single dictionary
+        p1 = get_profiles(api_url, params)
+        time.sleep(2)
+        p2 = get_profiles(api_url, params)
+
+        profiles = {'results': p1 + p2}
 
         write_profiles(profiles, 'profiles.json', os.getcwd())
 
