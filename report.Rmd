@@ -5,6 +5,29 @@ date: "03/10/2020"
 output: pdf_document
 ---
 
+```{r, include=FALSE}
+# Extract information from .txt file
+provinces <- read_lines(file = "scripts/provinces.txt")
+
+# Split string by "Province Name : Population"
+provinces <- strsplit(provinces, ":")
+
+# Generate stratum sample sizes
+N <- as.numeric(provinces[[1]][2]); n <- 10000
+n_h <- c(); province_names <- c();
+
+# Calculates n_h for each province
+for( i in 2:14) {
+  pn <- provinces[[i]][1]
+  N_h <- as.numeric(provinces[[i]][2])
+  
+  province_names <- c(province_names, pn)
+  n_h <- c(n_h, trunc((n/N)*N_h))
+}
+rm(N_h, pn)
+```
+
+
 # Executive Summary
 
 
