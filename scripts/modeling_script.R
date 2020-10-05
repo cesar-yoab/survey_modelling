@@ -8,9 +8,55 @@
 ### LIBS ####
 library(tidyverse) # Contains useful functions and ggplot
 library(rjson) # To parse profiles data-set
-library(cesR) # To generate values from the CES 
-
+set.seed(23948) # For generation of random numbers
 #### MODELING DATA ####
+
+# Extract information from .txt file
+provinces <- read_lines(file = "./scripts/provinces.txt")
+
+# Split string by "Province Name : Population"
+provinces <- strsplit(provinces, ":")
+
+# Generate stratum sample sizes
+N <- as.numeric(provinces[[1]][2]); n <- 10000
+n_h <- c(); province_names <- c();
+
+# Calculates n_h for each province
+for( i in 2:14) {
+  pn <- gsub('[0-9]+', '', provinces[[i]][1])
+  N_h <- as.numeric(provinces[[i]][2])
+  
+  
+  province_names <- c(province_names, pn)
+  n_h <- c(n_h, trunc((n/N)*N_h))
+}
+rm(N_h, pn)
+
+
+n_h <- n_h + 1
+
+# Generates a vector with string corresponding to province names
+# based on the number of samples to collect from each province
+# We shuffle the vector and return
+get.strat <- function() {
+  strat <- c()
+  
+  for ( i in 1:13) {
+    k <- n_h[i]
+    str <- province_names[i]
+    prov_vec <- c()
+    for (j in 1:k) {
+      prov_vec <- c(prov_vec, str)
+    }
+    strat <- c(strat, prov_vec)
+  }
+  
+  strat <- sample(strat)
+  strat[1:10000]
+}
+
+strata <- get.strat()
+
 # Load youtube data
 # We 
 youtube_data <- fromJSON(file = "scripts/yt-response.json")$items
@@ -27,7 +73,6 @@ yt_n <- yt_likes + yt_dlikes
 
 
 ## Generating values to model data
-set.seed(23948) # For generation of random numbers
 
 yt_likes <- yt_likes / yt_n # Youtube ratio of likes
 yt_dlikes <- yt_dlikes  / yt_n # Youtube ratio of dislikes
@@ -73,10 +118,10 @@ q4 <- rmultinom(n = 10000, size = 1, prob = q4_prop) # Data generation
 # Question 5 is only asked to the people that identified as eligible voters
 # It asks: If there was a general election tomorrow, which party would you
 # vote for?
-q5_prop <- list("Liberal" = yt_likes, "Conservative" = yt_dlikes * 0.6, 
+q5_prop <- list("Liberal" = yt_likes, "Conservative" = yt_dlikes * 0.62, 
                 "ndp" = yt_dlikes * 0.13,
-                "BlocQubc" = yt_dlikes * 0.12, "Green" = yt_dlikes * 0.12, 
-                "Other" =  yt_dlikes * 0.03)
+                "BlocQubc" = yt_dlikes * 0.16, "Green" = yt_dlikes * 0.059, 
+                "Other" =  yt_dlikes * 0.038)
 
 q5 <- rmultinom(n = sum(q1), size = 1, prob = q5_prop)
 
@@ -123,7 +168,8 @@ get_q5_lab <- function(x, i) {
 # All simulated data will go in this dataframe
 dataset <- data.frame(Q1 = numeric(0), Q2 = character(0),
                       Q3 = character(0), Q4 = numeric(0),
-                      Q5 = character(0), stringsAsFactors = FALSE)
+                      Q5 = character(0), Province = character(0), 
+                      stringsAsFactors = FALSE)
   
 small_counter <- 1
 # Adds data to dataframe
@@ -131,12 +177,13 @@ for ( i in 1:10000 ) {
   if (q1[i]) { # Eligible voters
     dataset[i, ] <- c(1, get_q2_lab(q2, small_counter),
                       get_q3_lab(q3, i), get_q4_lab(q4, i),
-                      get_q5_lab(q5, small_counter))
+                      get_q5_lab(q5, small_counter),
+                      strata[i])
     small_counter <- small_counter + 1
   } else { # Non-Eligible voters
     dataset[i, ] <- c(0, NA,
                       get_q3_lab(q3, i), get_q4_lab(q4, i),
-                     NA)
+                     NA, strata[i])
   }
 }
 rm(i)

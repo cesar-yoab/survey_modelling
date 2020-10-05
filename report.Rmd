@@ -6,38 +6,48 @@ output: pdf_document
 ---
 
 ```{r, include=FALSE}
-# Extract information from .txt file
-provinces <- read_lines(file = "scripts/provinces.txt")
+# bibliography: bib.bibtex
+## Libraries and initial values
+library(tidyverse)
 
-# Split string by "Province Name : Population"
-provinces <- strsplit(provinces, ":")
-
-# Generate stratum sample sizes
-N <- as.numeric(provinces[[1]][2]); n <- 10000
-n_h <- c(); province_names <- c();
-
-# Calculates n_h for each province
-for( i in 2:14) {
-  pn <- provinces[[i]][1]
-  N_h <- as.numeric(provinces[[i]][2])
-  
-  province_names <- c(province_names, pn)
-  n_h <- c(n_h, trunc((n/N)*N_h))
-}
-rm(N_h, pn)
+data <- read.csv("survey_data.csv")
 ```
 
 
 # Executive Summary
-
+In this experiment we conduct a simulation based study on a survey which aims
+to quantify the impact of the second wave of the COVID-19 pandemic on the
+political views of Canadian's. 
 
 # Introduction
 
 
 # Survey Methodology
+The objective of the survey is to analyze the impact of the incoming COVID-19
+second wave on Canada's population political views. 
+
+The population to be sampled will be the Canadian population. Provided access to
+a list of addresses and corresponding emails which will be used as a frame for
+this experiment, we generate $\mathbf{S}_h$ by stratified simple random 
+sampling (SRSWOR).
+
+```{r, echo=FALSE}
+knitr::kable(table(data$Province), caption = "Stratum Sizes", align = "lr",
+      col.names = c("Province", "Size"))
+```
+
+
+We seek a 95% confidence accuracy in this study. 
 
 
 # Results and Discussion
 
+# References
 
 # Apendix
+
+```{r, include =FALSE}
+#### CLEAN UP
+rm(list = ls())
+```
+

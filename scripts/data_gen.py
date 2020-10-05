@@ -5,11 +5,6 @@ import click
 import json
 
 
-# List of videos to get information
-vids = ['SIPCAhS0xjw', 'rQgQJ2kYnqo',
-        'FSOZrt3tTho', 'x0baobXKkIM', 'UVuk-qGQb2A']
-
-
 def parse_with_bs4(page):
     # Parse with bs4
     soup = BeautifulSoup(page.content, 'html.parser')
@@ -54,9 +49,21 @@ def write_data(data, filename, path):
             f.write(k + ':' + v + '\n')
 
 
+def get_vid_list():
+    """Opens the videos.txt file and puts in a list."""
+    vids = list()
+    with open('videos.txt', 'r') as f:
+        for vid in f:
+            vids.append(vid.rstrip())  # Remove the newline character
+
+    return vids
+
+
 def call_api(key):
     """Generates query for the API and calls the API"""
     url = 'https://www.googleapis.com/youtube/v3/videos?part=statistics&id='
+
+    vids = get_vid_list()
 
     for v in vids:
         url += v + ','

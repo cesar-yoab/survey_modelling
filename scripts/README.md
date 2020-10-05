@@ -33,3 +33,12 @@ python data_gen.py --help
 
 Now with this data we can start generatig the actual simulation data for the survey. We recommend installing
 [rstudio](https://rstudio.com/), or using [rstudio cloud](https://rstudio.cloud/) and using it for the following steps. Open modeling_script.R in rstudio or upload to rstudio cloud. 
+
+## List of video links
+1. [Trudeau promises more support for local public health units in COVID-19 hot spots](https://www.youtube.com/watch?v=i-aX4NJR9jU&ab_channel=CBCNews)
+2. [New Ontario COVID-19 restrictions ‘too little, too late,’ says nurses association](https://www.youtube.com/watch?v=SIPCAhS0xjw&t=62s&ab_channel=CBCNews)
+3. [Trudeau announces measures to help businesses survive lockdowns](https://www.youtube.com/watch?v=x0baobXKkIM&ab_channel=CBCNews)
+4. [Canada's COVID-19 messaging isn't reaching young people: expert](https://www.youtube.com/watch?v=rQgQJ2kYnqo&t=36s&ab_channel=CBCNews)
+5. [Liberals, NDP reach deal on sick leave, avoiding immediate election](https://www.youtube.com/watch?v=n_O0uPgdUDM&ab_channel=CBCNews)
+6. [CERB expires this weekend](https://www.youtube.com/watch?v=r2PP76dihcs&ab_channel=CBCNews)
+7. [COVID-19 update: Trudeau addresses Canadians](https://www.youtube.com/watch?v=FSOZrt3tTho&ab_channel=CBCNews)
