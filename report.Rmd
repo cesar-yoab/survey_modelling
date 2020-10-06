@@ -1,23 +1,90 @@
 ---
 title: "Monthly Canadian Election Poll"
 author: "Cesar Y. Villarreal Guzman"
-date: "03/10/2020"
+date: "October 8, 2020"
 output: pdf_document
+fontsize: 12pt
+bibliography: references.bib
+sansfont: Calibri Light
 ---
 
 ```{r, include=FALSE}
 # bibliography: bib.bibtex
 ## Libraries and initial values
 library(tidyverse)
+library(cowplot)
 
 data <- read.csv("survey_data.csv")
 ```
 
 
 # Executive Summary
-In this experiment we conduct a simulation based study on a survey which aims
-to quantify the impact of the second wave of the COVID-19 pandemic on the
-political views of Canadian's. 
+In this experiment we conduct a simulation based survey study
+to investigate the impact of the second wave of the COVID-19 pandemic on the
+political views of Canadian's. The study follows the premise of random selection
+of participants from a pool of candidates corresponding to the different Canadian
+provinces. The number of participants from each province was determined by 
+following the _stratified simple random sampling_ (SRSWOR) method [@wunthom].
+The survey was designed using the [Typeform](www.typeform.com) platform.
+The plan of administration is by email, coupled with a small
+monetary incentive ($5 coupon) upon completion. 
+
+Research has long suspected on the correlation between the length of a survey
+and response rate. An experiment evaluating redesigns of the U.S. Census found 
+that shortening the questionnaire increased response rate [@dillman], a more
+recent experiment showed a sizable negative
+effect of length on completion in web surveys [@marcus]. As a result, we decided
+to limit the survey to four questions:
+
+1. For whom did you vote in the 2019 Canadian federal elections?
+2. How do you feel about the general direction of our country at the moment?
+3. How much did the COVID-19 pandemic influence your response to the last question?
+4. If there was a general election tomorrow, which party would you vote for?
+
+Responses where simulated based on data collected from a list news videos 
+covering the address of Prime Minister Trudeau on the COVID-19 pandemic. 
+The videos used where from September and first week of October. 
+Overall we collected: _number of views_,
+_number of likes_, _number of dislikes_ and _number of comments_. This was 
+achieved by calling the official YouTube API provided by Google. Data was then
+processed and used to generate the following results, displayed in Figure 1.
+\pagebreak
+```{r fig1, echo=FALSE, warning=FALSE, fig.height = 4, fig.width = 7, fig.align = "center", error=FALSE, message=FALSE, fig.cap="Results for question 'For whom did you vote in the 2019 Canadian federal elections?'"}
+# Clean data to plot
+data.clean <- data[!is.na(data$Q2), ] # If there is NA in Q2 then there also in
+# Q4, this suffices.
+
+# Set percentages for question 2
+q2.plot.data <- data.clean %>%
+  group_by(Q2) %>% summarise(count = n()) %>%
+  mutate(perc = count / sum(count))
+
+# Set percentages for question 4
+q5.plot.data <- data.clean %>%
+  group_by(Q5) %>% summarise(count = n()) %>%
+  mutate(perc = count / sum(count))
+
+# Plot Fo
+p1 <- ggplot(data=subset(q2.plot.data, !is.na(q2.plot.data$Q2)), aes(x=factor(Q2), y=perc*100)) +
+  geom_bar(stat="identity", fill=I("tomato3"), alpha = I(.9)) + 
+  theme_light() + 
+  labs(title = "2019 Canadian elections vote choice") + 
+  xlab("Vote Choice") + ylab("Percentage of Votes (%)") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), 
+        text = element_text(size=10)) + ylim(0, 80) 
+
+p2 <- ggplot(data=q5.plot.data, aes(x=factor(Q5), y=perc*100)) +
+  geom_bar(stat="identity", fill=I("steelblue3"), alpha = I(.9)) + 
+  theme_light() + 
+  labs(title = "Simulated Vote choice") + 
+  xlab("Vote Choice") + ylab("Percentage of Votes (%)") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), 
+        text = element_text(size=10)) + ylim(0, 80) 
+
+plot_grid(p1, p2)
+```
+
+As can be seen there has been a small loss of approximately 3%. 
 
 # Introduction
 
@@ -29,7 +96,7 @@ second wave on Canada's population political views.
 The population to be sampled will be the Canadian population. Provided access to
 a list of addresses and corresponding emails which will be used as a frame for
 this experiment, we generate $\mathbf{S}_h$ by stratified simple random 
-sampling (SRSWOR).
+sampling (SRSWOR). 
 
 ```{r, echo=FALSE}
 # Generate table of frequencies
@@ -65,7 +132,6 @@ We seek a 95% confidence accuracy in this study.
 
 # Results and Discussion
 
-# References
 
 # Apendix
 
@@ -74,3 +140,4 @@ We seek a 95% confidence accuracy in this study.
 rm(list = ls())
 ```
 
+# References
