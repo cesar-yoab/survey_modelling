@@ -32,8 +32,31 @@ this experiment, we generate $\mathbf{S}_h$ by stratified simple random
 sampling (SRSWOR).
 
 ```{r, echo=FALSE}
-knitr::kable(table(data$Province), caption = "Stratum Sizes", align = "lr",
-      col.names = c("Province", "Size"))
+# Generate table of frequencies
+strat.sizes <- table(data$Province)
+
+# Extract information from .txt file
+provinces <- read_lines(file = "./scripts/provinces.txt")
+
+# Split string by "Province Name : Population"
+provinces <- strsplit(provinces, ":")
+
+# Generate stratum sample sizes
+N <- as.numeric(provinces[[1]][2]); n <- 10000
+W_h <- c(); prov <- c(); sizes <- c()
+
+# Calculates n_h for each province
+for( i in 2:14) {
+  W_h <- c(W_h, as.numeric(provinces[[i]][2]) / N)
+  p <- gsub('[0-9]+', '', provinces[[i]][1])
+  prov <- c(prov, p)
+  sizes <- c(sizes, strat.sizes[[p]])
+}
+
+stratum <- data.frame(province = prov, weights = W_h, size = sizes)
+
+knitr::kable(stratum, caption = "Stratum Sizes and Weights", align = "lcr",
+      col.names = c("Province", "Stratum Weight", "Stratum Sample Size"), digits = 3)
 ```
 
 
