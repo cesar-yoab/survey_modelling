@@ -1,5 +1,5 @@
 ---
-title: "Liberal Party losing votes due to COVID-19"
+title: "Liberal Party losing votes due to COVID-19 economic impact"
 author: "Cesar Y. Villarreal Guzman"
 date: "October 8, 2020"
 output: pdf_document
@@ -15,6 +15,31 @@ library(tidyverse)
 library(cowplot)
 
 data <- read.csv("survey_data.csv")
+
+#### Computation of stratum Weights and stratum sample sizes
+# Generate table of frequencies for distribution of provinces
+strat.sizes <- table(data$Province)
+
+# Extract information from .txt file with population sizes
+provinces <- read_lines(file = "./scripts/provinces.txt")
+
+# Split string by "Province Name : Population"
+provinces <- strsplit(provinces, ":")
+# Generate stratum sample sizes
+N <- as.numeric(provinces[[1]][2]); n <- 10000
+W_h <- c(); prov <- c(); sizes <- c()
+
+# Calculates n_h for each province
+for( i in 2:14) {
+  W_h <- c(W_h, as.numeric(provinces[[i]][2]) / N)
+  p <- gsub('[0-9]+', '', provinces[[i]][1])
+  prov <- c(prov, p)
+  sizes <- c(sizes, strat.sizes[[p]])
+} 
+strat.n.w <- data.frame(province = prov, weights = W_h, size = sizes)
+rm(i, n, N, p)
+
+strat.n.w <- strat.n.w[order(strat.n.w$province), ]
 ```
 
 
@@ -26,7 +51,8 @@ of participants from a pool of candidates corresponding to the different Canadia
 provinces. The number of participants from each province was determined by 
 following the _stratified simple random sampling_  method [@wunthom].
 The survey was designed using the [Typeform](www.typeform.com) platform.
-The plan of administration is by email, coupled with a small
+The plan of administration is by email
+, coupled with a small
 monetary incentive ($5 coupon) upon completion. 
 
 Research has long suspected on the correlation between the length of a survey
@@ -104,21 +130,36 @@ of the validity of such claims.
 
 ## Survey Methodology
 In this section we thoroughly discuss the all aspects of the design of the experiment.
-First we talk about logistics, content of the survey and budgeting, followed by
-the statistical basis, frame, sampling methodology and non-response/missing fields
-plan. 
-
-### Logistics, Content and Cost
-
+First we talk about logistics, statistical basis, frame, sampling methodology 
+and methods for non-responses this is then followed by content of the survey and budgeting
 
 We conduct the experiment as a web survey created using Typeform as a survey design
-framework. The distribution of the survey is via email, to the selected candidates.
-We discuss more on the selection of these candidates in the statistical basis
-section. Upon competition, the survey contains logic to redirect respondents 
-to the $5 CAD reward.
+framework. 
+A complete list of Canadian addresses has been provided and is used as frame for
+the survey. We follow stratified simple random sampling as our design, with each
+province as strata. The selection of candidates is by simple random sampling
+without replacement (SRSWOR). The selected candidate is sent an invitation to 
+register to complete the survey. If the candidate accepts the invitation, we send
+an email with a link to the survey. Upon competition, the survey redirects respondents 
+to a $5 CAD reward. In the case the candidate does not accept, we draw another 
+candidate following the same SRSWOR method, this is repeated until the desired
+sample size of $n=10,000$ is reached. 
 
-For the same reason we selected a small
-set of questions. This is because research has long showed some correlation
+The number of candidates we select from each province is calculated using 
+proportional allocation. Say the population has size $N$ and the population
+of province $h$ is $N_h$, then the number of samples to draw from province $h$
+is 
+\[n_h=\frac{n}{N}N_h\]
+where $n$ is the total sample size. Similarly, we compute the stratum weight,
+which is the relative size of the stratum within the overall population, a needed
+quantity for population parameter estimation. The stratum weight of strata $h$ 
+is given by
+\[W_h=\frac{n_h}{n}\]
+where $n_h$ is as above [@wunthom]. A complete table of sample computed strata sample sizes
+and weights can be found in Table 1 in the Appendix.
+
+To ensure a high response rate we selected a small
+set of questions. This is because, research has long showed some correlation
 between the length of a survey and response rate, for example, an experiment evaluating
 redesigns of the U.S. Census found 
 that shortening the questionnaire increased response rate [@dillman], a more
@@ -162,24 +203,26 @@ COVID-19 related projects that are strictly not-for-profit.
 
 The expected cost for this project is broken down as follows. First the $5 CAD
 monetary reward delivered upon completion of the survey, with a total of approximately $50,000 CAD,
-for 10,000 respondents.
-**Therefore, **
-**the expected cost of this experiment is of approximately $53,112 CAD**. This number can
-vary depending on exchange rates between USD and CAD. 
-
-
-### Statistical Basis, Frame and Methods
-As explained, this the experiment is a web survey that consists of a monetary
-reward as incentive. This method employs an opt-in panel method, which is a type
-of non-probability sampling. 
+for 10,000 respondents. An estimated 20,000 invitations with a price of $0.92 CAD
+per invitation and estimated total of $18,400 CAD. Finally, the cost for printing
+20,000 invitations is $400 CAD. 
+**Therefore, the expected cost of this experiment is of approximately $68,800 CAD**.
 
 ## Results and Discussion
-In this section we begin by displaying the obtained data in the form of plots
-and summary statistics. We then follow it by a discussion of the data and finish
-with a weaknesses and future work paragraph. Observe below a plot of obtained
+In this section we begin by displaying the modeled data in the form of frequency plots
+.We then follow it by a discussion of the data and statistical inferences, we then finish
+with a weaknesses and future work section. Data was pre-cleaned by removing all
+NA values corresponding to all non-eligible respondents. The resulting sample size
+is $n=8961$.For convenience we group question
+two and five, question two asked respondents which party did they vote for 
+in the 2019 Federal elections, and question five asks to choose a party if 
+general elections where held tomorrow. Similarly we grouped question three and
+four, which asked about the general economic direction of our country and the
+impact of COVID-19 in the response of question three. Figure 2 and 3
+display the raw data simulated in this experiment.
 
 
-```{r fig2, echo=FALSE, warning=FALSE, fig.height = 4, fig.width = 7, fig.align = "center", error=FALSE, message=FALSE, fig.cap="Results for question 'For whom did you vote in the 2019 Canadian federal elections?'"}
+```{r fig2, echo=FALSE, warning=FALSE, fig.height = 4, fig.width = 7, fig.align = "center", error=FALSE, message=FALSE, fig.cap="Answers for questions two and five."}
 
 ## The following code is used to generate plots for each question
 
@@ -201,7 +244,7 @@ q5.plot.data <- data.clean %>%
 p2 <- ggplot(data=subset(q2.plot.data, !is.na(q2.plot.data$Q2)), aes(x=factor(Q2), y=perc*100)) +
   geom_bar(stat="identity", fill=I("tomato3"), alpha = I(.9)) + 
   theme_light() + 
-  labs(title = "2019 Canadian elections vote choice") + 
+  labs(title = "Q1: 2019 Canadian elections vote choice") + 
   xlab("Vote Choice") + ylab("Percentage of Votes (%)") + 
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), 
         text = element_text(size=10)) + ylim(0, 80) 
@@ -209,7 +252,7 @@ p2 <- ggplot(data=subset(q2.plot.data, !is.na(q2.plot.data$Q2)), aes(x=factor(Q2
 p5 <- ggplot(data=q5.plot.data, aes(x=factor(Q5), y=perc*100)) +
   geom_bar(stat="identity", fill=I("steelblue3"), alpha = I(.9)) + 
   theme_light() + 
-  labs(title = "Simulated Vote choice") + 
+  labs(title = "Q5: Current Vote choice") + 
   xlab("Vote Choice") + ylab("Percentage of Votes (%)") + 
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), 
         text = element_text(size=10)) + ylim(0, 80) 
@@ -220,9 +263,9 @@ q3.plot.data <- data %>%
   mutate(perc = count / sum(count))
 
 p3 <- ggplot(data=q3.plot.data, aes(x=factor(Q3), y=perc*100)) +
-  geom_bar(stat="identity", fill=I("cyan2"), alpha = I(.9)) + 
+  geom_bar(stat="identity", fill=I("cyan3"), alpha = I(.9)) + 
   theme_light() + 
-  labs(title = "Question 3") + 
+  labs(title = "Q3: Direction of Canadian economy.") + 
   xlab("Answer") + ylab("Percentage of answers (%)") + 
   theme( text = element_text(size=10)) + ylim(0, 80) 
 
@@ -233,49 +276,166 @@ q4.plot.data <- data %>%
   mutate(perc = count / sum(count))
 
 p4 <- ggplot(data=q4.plot.data, aes(x=factor(Q4), y=perc*100)) +
-  geom_bar(stat="identity", fill=I("green"), alpha = I(.8)) + 
+  geom_bar(stat="identity", fill=I("seagreen4"), alpha = I(.8)) + 
   theme_light() + 
-  labs(title = "Question 3") + 
-  xlab("Answer") + ylab("Percentage of answers (%)") + 
+  labs(title = "Q4: Impact of COVID-19 to Q3.") + 
+  xlab("Impact on a scale 1-5") + ylab("Percentage of answers (%)") + 
   theme( text = element_text(size=10)) + ylim(0, 80) 
 
 plot_grid(p2, p5)	
 ```
-
-\pagebreak
-```{r fig3, echo=FALSE, warning=FALSE, fig.height = 4, fig.width = 7, fig.align = "center", error=FALSE, message=FALSE, fig.cap="Results for question 'For whom did you vote in the 2019 Canadian federal elections?'"}
+```{r fig3, echo=FALSE, warning=FALSE, fig.height = 4, fig.width = 7, fig.align = "center", error=FALSE, message=FALSE, fig.cap="Answers for questions three and four."}
 plot_grid(p3, p4)	
+```
+\pagebreak
+Raw data shows that there is a small percentage of respondents that are choosing 
+to vote for another party which is not the Liberal party. Similarly a majority
+feel like the Canadian economy is moving in the wrong direction with a significant
+portion of respondents claiming that COVID-19 has a high impact in their response
+to the previous question. However, this are just the raw results and we cannot 
+make any empirical conclusions based just on these.
+
+To properly estimate population parameters we seek to calculate the stratified 
+sample mean. The stratified sample mean is given by 
+\[\overline{y}_{st}=\sum_{h=1}^HW_h\overline{y}_h\]
+where $W_h$ is as in the previous section, the stratum weight, and $\overline{y}_h$
+the sample mean for stratum $h$ is given by:
+\[\overline{y}_h=\frac{1}{n_h}\sum_{i\in S_h}y_i\]
+Here $S_h$ is the sample corresponding to stratum $h$.
+Moreover, the stratified sample mean is an unbiased estimator of the population mean 
+$\mu_y$, i.e.
+\[E(\overline{y}_{st})=\mu_y\]
+similarly an unbiased variance estimator for $\overline{y}_{st}$ is given by
+\[v(\overline{y}_{st})=\sum_{h=1}^HW_h^2\left(1-\frac{n_h}{N_h}\right)\frac{s^2_{yh}}{n_h}\]
+as per Theorem 3.1 in @wunthom.
+
+```{r, include=FALSE}
+#### Calculation of stratified sample mean for selected variables
+# Recall strat.n.w is a dataframe with province sample sizes and weights
+
+# Select variable to study
+q2.liberals <- subset(data.clean, Q2 == "Liberal")
+q5.liberals <- subset(data.clean, Q5 == "Liberal")
+
+# Group by stratum and calculate ybar
+# Estimation of stratified sample mean for question 2
+q2.by.strata <- q2.liberals %>% group_by(Province) %>% count()
+q2.ybar.strata <- q2.by.strata$n / strat.n.w$size
+q2.ybar <- sum(q2.ybar.strata * strat.n.w$weights)
+
+# Estimation of stratified sample mean for question 5
+q5.by.strata <- q5.liberals %>% group_by(Province) %>% count()
+q5.ybar.strata <- q5.by.strata$n / strat.n.w$size
+q5.ybar <- sum(q5.ybar.strata * strat.n.w$weights)
+
+# Estimation of variance for the stratified sample mean
+
+#Gather province populations
+provinces <- read_lines(file = "./scripts/provinces.txt")
+provinces <- sort(provinces[2:length(provinces)])
+provinces <- strsplit(provinces, ":")
+provinces <- as.integer(sapply(provinces, "[[", 2))
+
+# Computation of unbiased variance estimator for ybar
+q5.ss <- (q5.by.strata$n - q5.ybar)**2 / (strat.n.w$size - 1)
+q5.var <- (strat.n.w$weights^2) * (1- (strat.n.w$size / provinces)) * (q5.ss / strat.n.w$size)
+q5.var <- sum(q5.var)
+
+# Computation of the 90% confidence interval for ybar
+z <- qnorm(.1,lower.tail=FALSE)
+q5.ci.L <- q5.ybar - (z*sqrt(q5.var))
+q5.ci.U <- q5.ybar + (z*sqrt(q5.var))
+```
+
+As per the introduction, the first thing to compute is the percentage of votes
+the Liberal party has with respect to the population and compare this number to 
+what the current percentage of votes is estimated to be. Using the method described
+above, the estimated percentage of votes obtained in the 2019 election is
+of **`r round(q2.ybar * 100, digits=2)`%**, and as a point of comparison the actual 
+percentage of votes with which the Liberal party won the 2019 Canadian elections is 39.47%.
+Similarly, we estimate that the current percentage of votes is 
+**`r round(q5.ybar*100, digits=2)`%** with a variance of `r round(q5.var * 100, digits=2)`%
+and a 90% confidence
+interval [`r round(100*q5.ci.L, digits=2)`, 
+`r round(100*q5.ci.U, digits=2)`]. An estimated loss of 
+`r round(100*(q2.ybar - q5.ybar), digits=2)`% of votes.
+
+```{r, include=FALSE}
+# Population estimation of Economy moving in the wrong direction
+q3.wrong <- subset(data.clean, Q3 == "Wrong")
+
+# Estimation of stratified sample mean for question 3
+q3.by.strata <- q3.wrong %>% group_by(Province) %>% count()
+q3.ybar.strata <- q3.by.strata$n / strat.n.w$size
+q3.ybar <- sum(q3.ybar.strata * strat.n.w$weights)
+
+# Computation of unbiased variance estimator for ybar
+q3.ss <- (q3.by.strata$n - q3.ybar)**2 / (strat.n.w$size - 1)
+q3.var <- (strat.n.w$weights^2) * (1- (strat.n.w$size / provinces)) * (q3.ss / strat.n.w$size)
+q3.var <- sum(q3.var)
+
+# Computation of the 90% confidence interval for ybar
+q3.ci.L <- q5.ybar - (z*sqrt(q3.var))
+q3.ci.U <- q5.ybar + (z*sqrt(q3.var))
+
+### Population estimation of Economy at a standstill
+q3.stand <- subset(data.clean, Q3 == "Standstill")
+
+# Estimation of stratified sample mean for question 3
+q32.by.strata <- q3.stand %>% group_by(Province) %>% count()
+q32.ybar.strata <- q32.by.strata$n / strat.n.w$size
+q32.ybar <- sum(q32.ybar.strata * strat.n.w$weights)
+
+# Computation of unbiased variance estimator for ybar
+q32.ss <- (q32.by.strata$n - q32.ybar)**2 / (strat.n.w$size - 1)
+q32.var <- (strat.n.w$weights^2) * (1- (strat.n.w$size / provinces)) * (q32.ss / strat.n.w$size)
+q32.var <- sum(q32.var)
+
+# Computation of the 90% confidence interval for ybar
+q32.ci.L <- q5.ybar - (z*sqrt(q32.var))
+q32.ci.U <- q5.ybar + (z*sqrt(q32.var))
 ```
 
 
+Similarly we find that most people that claim Canadian economy is moving in the
+wrong direction, feel this is partially caused by the COVID-19 pandemic. Following
+the same methodology we compute an estimate that **`r round(100*q3.ybar, digits=2)`%**
+of Canadians feel the economy moving in the wrong direction, with a computed variance
+of `r round(100* q3.var, digits=2)`% and a 90% confidence interval [`r round(100*q3.ci.L, digits=2)`, 
+`r round(100*q3.ci.U, digits=2)`]. Similarly **`r round(100*q32.ybar, digits=2)`%**
+of Canadians feel the economy is at a standstill, with a computed variance
+of `r round(100* q32.var, digits=2)`% and a 90% confidence interval [`r round(100*q32.ci.L, digits=2)`, 
+`r round(100*q32.ci.U, digits=2)`].
+
+Finally we discuss some of the weaknesses of our approach. The first comes from 
+the design of the survey. It has been justified the reason for such a short survey
+however, this is also a weakness because it does not provide nearly enough information
+to study and discuss. We had to limit this study to two main results, the loss
+of votes and the percentage of people that are feeling a negative direction in our 
+economy. Moreover, this survey comes with a significant cost, nearly  $70,000 CAD. 
+A non-probability, opt-in web survey offers the promise of being significantly cheaper,
+and possibly generate a bigger sample size at the cost of theoretical complications. 
+
+Future work could include a slightly longer survey, in which there is a large 
+set of questions and with the use of active matrix factorization, we can 
+automate the design of shorter by a variance-minimizing active
+learning criterion which chooses the most informative questions per respondent [@zhangtaylor].
+This type of survey can be a non-probability based survey that attempts to gather 
+at least $50,000$ samples. More complex theoretical tools are required for the 
+statistical analysis of such survey. 
+\pagebreak
+
 ## Appendix
 ```{r, echo=FALSE}
-# Generate table of frequencies
-strat.sizes <- table(data$Province)
-
-# Extract information from .txt file
-provinces <- read_lines(file = "./scripts/provinces.txt")
-
-# Split string by "Province Name : Population"
-provinces <- strsplit(provinces, ":")
-
-# Generate stratum sample sizes
-N <- as.numeric(provinces[[1]][2]); n <- 10000
-W_h <- c(); prov <- c(); sizes <- c()
-
-# Calculates n_h for each province
-for( i in 2:14) {
-  W_h <- c(W_h, as.numeric(provinces[[i]][2]) / N)
-  p <- gsub('[0-9]+', '', provinces[[i]][1])
-  prov <- c(prov, p)
-  sizes <- c(sizes, strat.sizes[[p]])
-}
-
 stratum <- data.frame(province = prov, weights = W_h, size = sizes)
 
+#stratum <- stratum[order(stratum$province), ]
 knitr::kable(stratum, caption = "Stratum Sizes and Weights", align = "lcr",
       col.names = c("Province", "Stratum Weight", "Stratum Sample Size"), digits = 3)
 ```
 
-
+---
+nocite: '@*'
+---
+\pagebreak
 ## References
