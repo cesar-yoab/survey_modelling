@@ -1,5 +1,5 @@
 ---
-title: "Monthly Canadian Election Poll"
+title: "Liberal Party losing votes due to COVID-19"
 author: "Cesar Y. Villarreal Guzman"
 date: "October 8, 2020"
 output: pdf_document
@@ -18,21 +18,19 @@ data <- read.csv("survey_data.csv")
 ```
 
 
-# Executive Summary
+## Executive Summary
 In this experiment we conduct a simulation based survey study
 to investigate the impact of the second wave of the COVID-19 pandemic on the
 political views of Canadian's. The study follows the premise of random selection
 of participants from a pool of candidates corresponding to the different Canadian
 provinces. The number of participants from each province was determined by 
-following the _stratified simple random sampling_ (SRSWOR) method [@wunthom].
+following the _stratified simple random sampling_  method [@wunthom].
 The survey was designed using the [Typeform](www.typeform.com) platform.
 The plan of administration is by email, coupled with a small
 monetary incentive ($5 coupon) upon completion. 
 
 Research has long suspected on the correlation between the length of a survey
-and response rate. An experiment evaluating redesigns of the U.S. Census found 
-that shortening the questionnaire increased response rate [@dillman], a more
-recent experiment showed a sizable negative
+and response rate. One exampleis from a recent experiment which showed a sizable negative
 effect of length on completion in web surveys [@marcus]. As a result, we decided
 to limit the survey to four questions:
 
@@ -47,7 +45,8 @@ The videos used where from September and first week of October.
 Overall we collected: _number of views_,
 _number of likes_, _number of dislikes_ and _number of comments_. This was 
 achieved by calling the official YouTube API provided by Google. Data was then
-processed and used to generate the following results, displayed in Figure 1.
+processed and used to generate responses. Figure 1 displays important results
+from this study.
 \pagebreak
 ```{r fig1, echo=FALSE, warning=FALSE, fig.height = 4, fig.width = 7, fig.align = "center", error=FALSE, message=FALSE, fig.cap="Results for question 'For whom did you vote in the 2019 Canadian federal elections?'"}
 # Clean data to plot
@@ -81,23 +80,175 @@ p2 <- ggplot(data=q5.plot.data, aes(x=factor(Q5), y=perc*100)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), 
         text = element_text(size=10)) + ylim(0, 80) 
 
-plot_grid(p1, p2)
+plot_grid(p1, p2)	
 ```
 
-As can be seen there has been a small loss of approximately 3%. 
+As seen there is a loss of approximately 4% in the number of Liberal voters.
+The conclusion reached in this investigation, is that there is some correlation 
+with the COVID-19 pandemic. Further investigation is required to achieve a stronger
+conclusion and we advise the Liberal political team to take these results with a
+grain of salt.
 
-# Introduction
+## Introduction
+
+The COVID-19 pandemic has nearly created a state of economic collapse in Canada,
+and this second wave promises to be more severe than the first one encountered in
+April and May of this year. Strict measures where taken by the Canadian leadership
+as a countermeasure to the pandemic. These measures produced an overwhelming amount
+of lost jobs and businesses to go bankrupt. We believe this has shifted the 
+mentality and overall perspective of the Canadian population which as a result
+may impact the overall acceptance of the Canadian Liberal party.
+This experiment attempts to quantify such claims and evaluates the implications
+of the validity of such claims.
 
 
-# Survey Methodology
-The objective of the survey is to analyze the impact of the incoming COVID-19
-second wave on Canada's population political views. 
+## Survey Methodology
+In this section we thoroughly discuss the all aspects of the design of the experiment.
+First we talk about logistics, content of the survey and budgeting, followed by
+the statistical basis, frame, sampling methodology and non-response/missing fields
+plan. 
 
-The population to be sampled will be the Canadian population. Provided access to
-a list of addresses and corresponding emails which will be used as a frame for
-this experiment, we generate $\mathbf{S}_h$ by stratified simple random 
-sampling (SRSWOR). 
+### Logistics, Content and Cost
 
+
+We conduct the experiment as a web survey created using Typeform as a survey design
+framework. The distribution of the survey is via email, to the selected candidates.
+We discuss more on the selection of these candidates in the statistical basis
+section. Upon competition, the survey contains logic to redirect respondents 
+to the $5 CAD reward.
+
+For the same reason we selected a small
+set of questions. This is because research has long showed some correlation
+between the length of a survey and response rate, for example, an experiment evaluating
+redesigns of the U.S. Census found 
+that shortening the questionnaire increased response rate [@dillman], a more
+recent experiment showed a sizable negative
+effect of length on completion in web surveys [@marcus]. 
+
+In constructing the survey, we followed [@fanyan] very closely. In particular 
+@fanyan suggests that the optimal survey should take less than thirteen minutes 
+to complete. Our survey takes approximately two to four minutes.
+The questions are:
+
+1. Are you eligible to vote?
+2. Which Canadian province do you live in?
+2. For whom did you vote in the 2019 Canadian federal elections?
+3. How do you feel about the economic direction of our country at the moment? 
+4. How much did the COVID-19 pandemic influence your response to the last question?
+5. If there was a general election tomorrow, which party would you vote for?
+
+Questions are presented in this order and not randomized since there are no 
+empirical results that either prove or disprove the efficiency of this method.
+The actual wording of the questions is different than what is presented above, 
+however the language used is significantly less formal, done with the intention
+to yield higher response rates. The third question has the option to not provide
+an answer since we understand this might be a sensitive topic and could negatively
+impact our response rate. 
+
+It is important to mention the drawbacks of providing this option.
+Avoiding the question gives respondents an alternative to the cognitive burden
+of the question and they are more likely to take this mental shortcut referred in 
+the literature as satisficing [@krosnick]. Consequently, question two is the only question 
+where this is allowed. 
+
+Logic is implemented to the survey in question 1, if the respondent is not an
+eligible voter then we only display questions two, three and four, Typeform fills
+all other values with _NA_ and will not be included in the analysis, since we
+are purposefully targeting Canadian adults. All other questions are mandatory 
+and we will discard any surveys that are left half answered. This Typeform
+feature is only available under the professional plan. We obtained this plan
+for free because, Typeform is offering 3 months free for anyone working on 
+COVID-19 related projects that are strictly not-for-profit.
+
+The expected cost for this project is broken down as follows. First the $5 CAD
+monetary reward delivered upon completion of the survey, with a total of approximately $50,000 CAD,
+for 10,000 respondents.
+**Therefore, **
+**the expected cost of this experiment is of approximately $53,112 CAD**. This number can
+vary depending on exchange rates between USD and CAD. 
+
+
+### Statistical Basis, Frame and Methods
+As explained, this the experiment is a web survey that consists of a monetary
+reward as incentive. This method employs an opt-in panel method, which is a type
+of non-probability sampling. 
+
+## Results and Discussion
+In this section we begin by displaying the obtained data in the form of plots
+and summary statistics. We then follow it by a discussion of the data and finish
+with a weaknesses and future work paragraph. Observe below a plot of obtained
+
+
+```{r fig2, echo=FALSE, warning=FALSE, fig.height = 4, fig.width = 7, fig.align = "center", error=FALSE, message=FALSE, fig.cap="Results for question 'For whom did you vote in the 2019 Canadian federal elections?'"}
+
+## The following code is used to generate plots for each question
+
+# Clean data to plot
+data.clean <- data[!is.na(data$Q2), ] # If there is NA in Q2 then there also in
+# Q4, this suffices.
+
+# Set percentages for question 2
+q2.plot.data <- data.clean %>%
+  group_by(Q2) %>% summarise(count = n()) %>%
+  mutate(perc = count / sum(count))
+
+# Set percentages for question 4
+q5.plot.data <- data.clean %>%
+  group_by(Q5) %>% summarise(count = n()) %>%
+  mutate(perc = count / sum(count))
+
+# Plot Fo
+p2 <- ggplot(data=subset(q2.plot.data, !is.na(q2.plot.data$Q2)), aes(x=factor(Q2), y=perc*100)) +
+  geom_bar(stat="identity", fill=I("tomato3"), alpha = I(.9)) + 
+  theme_light() + 
+  labs(title = "2019 Canadian elections vote choice") + 
+  xlab("Vote Choice") + ylab("Percentage of Votes (%)") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), 
+        text = element_text(size=10)) + ylim(0, 80) 
+
+p5 <- ggplot(data=q5.plot.data, aes(x=factor(Q5), y=perc*100)) +
+  geom_bar(stat="identity", fill=I("steelblue3"), alpha = I(.9)) + 
+  theme_light() + 
+  labs(title = "Simulated Vote choice") + 
+  xlab("Vote Choice") + ylab("Percentage of Votes (%)") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), 
+        text = element_text(size=10)) + ylim(0, 80) 
+
+
+q3.plot.data <- data %>%
+  group_by(Q3) %>% summarise(count = n()) %>%
+  mutate(perc = count / sum(count))
+
+p3 <- ggplot(data=q3.plot.data, aes(x=factor(Q3), y=perc*100)) +
+  geom_bar(stat="identity", fill=I("cyan2"), alpha = I(.9)) + 
+  theme_light() + 
+  labs(title = "Question 3") + 
+  xlab("Answer") + ylab("Percentage of answers (%)") + 
+  theme( text = element_text(size=10)) + ylim(0, 80) 
+
+
+
+q4.plot.data <- data %>%
+  group_by(Q4) %>% summarise(count = n()) %>%
+  mutate(perc = count / sum(count))
+
+p4 <- ggplot(data=q4.plot.data, aes(x=factor(Q4), y=perc*100)) +
+  geom_bar(stat="identity", fill=I("green"), alpha = I(.8)) + 
+  theme_light() + 
+  labs(title = "Question 3") + 
+  xlab("Answer") + ylab("Percentage of answers (%)") + 
+  theme( text = element_text(size=10)) + ylim(0, 80) 
+
+plot_grid(p2, p5)	
+```
+
+\pagebreak
+```{r fig3, echo=FALSE, warning=FALSE, fig.height = 4, fig.width = 7, fig.align = "center", error=FALSE, message=FALSE, fig.cap="Results for question 'For whom did you vote in the 2019 Canadian federal elections?'"}
+plot_grid(p3, p4)	
+```
+
+
+## Appendix
 ```{r, echo=FALSE}
 # Generate table of frequencies
 strat.sizes <- table(data$Province)
@@ -127,17 +278,4 @@ knitr::kable(stratum, caption = "Stratum Sizes and Weights", align = "lcr",
 ```
 
 
-We seek a 95% confidence accuracy in this study. 
-
-
-# Results and Discussion
-
-
-# Apendix
-
-```{r, include =FALSE}
-#### CLEAN UP
-rm(list = ls())
-```
-
-# References
+## References
