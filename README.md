@@ -7,7 +7,7 @@ The process for modelling responses can be found in [here](https://github.com/ce
 If you do not wish to genereate the data yourself you can use the already generated data located
 in this repository "survey_data.cvs".
 
-# Useful links 
+# Useful links for this project 
 1. [Population](https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1710000901)
 3. [YouTube API](https://developers.google.com/youtube/v3/docs/videos/list)
 4. [YouTube API keys](https://developers.google.com/youtube/v3/docs/?apix=true)
