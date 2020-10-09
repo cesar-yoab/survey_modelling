@@ -1,0 +1,14 @@
+Canada:38005238
+Newfoundland and Labrador:522103
+Prince Edward Island:159625
+Nova Scotia:979351
+New Brunswick:781476
+Quebec:8574571
+Ontario:14734014
+Manitoba:1379263
+Saskatchewan:1178681
+Alberta:4421876
+British Columbia:5147712
+Yukon:42052
+Northwest Territories5:45161
+Nunavut5:39353

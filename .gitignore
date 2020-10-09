@@ -184,4 +184,3 @@ cython_debug/
 
 # Data files
 *.json
-*.txt
