@@ -54,12 +54,12 @@ q2.liberals <- subset(data.clean, Q2 == "Liberal")
 q5.liberals <- subset(data.clean, Q5 == "Liberal")
 
 # Group by stratum and calculate ybar
-# Estimation of stratified sample mean for question 2
+# Estimation of stratified sample mean for question 3
 q2.by.strata <- q2.liberals %>% group_by(Province) %>% count()
 q2.ybar.strata <- q2.by.strata$n / strat.n.w$size
 q2.ybar <- sum(q2.ybar.strata * strat.n.w$weights)
 
-# Estimation of stratified sample mean for question 5
+# Estimation of stratified sample mean for question 6
 q5.by.strata <- q5.liberals %>% group_by(Province) %>% count()
 q5.ybar.strata <- q5.by.strata$n / strat.n.w$size
 q5.ybar <- sum(q5.ybar.strata * strat.n.w$weights)
@@ -85,7 +85,7 @@ q5.ci.U <- q5.ybar + (z*sqrt(q5.var))
 # Population estimation of Economy moving in the wrong direction
 q3.wrong <- subset(data.clean, Q3 == "Wrong")
 
-# Estimation of stratified sample mean for question 3
+# Estimation of stratified sample mean for question 4
 q3.by.strata <- q3.wrong %>% group_by(Province) %>% count()
 q3.ybar.strata <- q3.by.strata$n / strat.n.w$size
 q3.ybar <- sum(q3.ybar.strata * strat.n.w$weights)
@@ -102,7 +102,7 @@ q3.ci.U <- q5.ybar + (z*sqrt(q3.var))
 ### Population estimation of Economy at a standstill
 q3.stand <- subset(data.clean, Q3 == "Standstill")
 
-# Estimation of stratified sample mean for question 3
+# Estimation of stratified sample mean for question 4
 q32.by.strata <- q3.stand %>% group_by(Province) %>% count()
 q32.ybar.strata <- q32.by.strata$n / strat.n.w$size
 q32.ybar <- sum(q32.ybar.strata * strat.n.w$weights)
@@ -119,15 +119,14 @@ q32.ci.U <- q5.ybar + (z*sqrt(q32.var))
 
 
 ## Executive Summary
-In this experiment we conduct a simulation based survey study
-to investigate the impact of the second wave of the COVID-19 pandemic on the
-political views of Canadian's, with particular interest on the opinion
-of the Liberal Party. The study is conducted by random selection
+In this experiment we conduct a, simulation based, survey study
+to investigate Canadian's political views and how it has been affected by the 
+negative economic consequences brought by the COVID-19 pandemic. The study is conducted by random selection
 of participants from 13 pools of candidates corresponding to the different Canadian
-provinces. An invitation is first sent to a selected candidate and upon registration
+provinces. An invitation is first sent to a selected candidate and upon registration,
 administration of the survey is done by email. The survey is coupled with a small
 monetary incentive ($5 coupon) which is rewarded upon completion of the survey. 
-The survey is designed using the tool www.typeform.com. No personal data
+This study is designed using the tool www.typeform.com. No personal data
 is collected to protect the privacy of respondents.
 
 Research has long suspected on the correlation between the length of a survey
@@ -149,10 +148,10 @@ Data collected includes: _number of views_,
 _number of likes_, _number of dislikes_ and _number of comments_. 
 
 We focus our study on quantifying the number of lost/gained votes in favor of the
-Liberal Party. Figure 1 displays the raw data collected for questions two and
-four. This figure helps to visualize the actual findings of the study.
+Liberal Party. Figure 1 displays the raw data collected for questions three and
+six. This figure helps to visualize the actual findings of the study.
 \pagebreak
-```{r fig1, echo=FALSE, warning=FALSE, fig.height = 4, fig.width = 7, fig.align = "center", error=FALSE, message=FALSE, fig.cap="Results for question 'For whom did you vote in the 2019 Canadian federal elections?'"}
+```{r fig1, echo=FALSE, warning=FALSE, fig.height = 4, fig.width = 7, fig.align = "center", error=FALSE, message=FALSE, fig.cap="Results for questions 3 and 6"}
 # Set percentages for question 2
 q2.plot.data <- data.clean %>%
   group_by(Q2) %>% summarise(count = n()) %>%
@@ -193,7 +192,8 @@ standstill.
 
 Some major weakness to our approach lie in the simplicity of the survey. We
 believe a longer study should be carried out, as future work, to gather more information on the
-social aspects that society thinks are the most impacted by COVID-19. We particularly
+social aspects that society thinks are the most impacted by COVID-19, given the 
+majority of the Canadian leadership is formed by Liberal party members. We particularly
 chose economic impact as the focus given empirical evidence of the negative effects
 of the pandemic in Canada's and the world economy.
 
@@ -207,9 +207,9 @@ as a countermeasure to the spread of the virus. These measures produced an overw
 of jobs being lost and businesses that are now in a state of bankruptcy. 
 With this as primary motivation, we claim there has been a shift
 in the acceptance of the Canadian Liberal party as a result of these measures.
-This experiment attempts to quantify such claim and evaluate its implications.
+This experiment attempts to quantify such claims and evaluate its implications.
 
-Following, there is thorough discussion on the methodology of the study conducted,
+In the next section, there is a thorough discussion on the methodology of the study conducted,
 in this section we discuss logistics, statistical basis and costs, to name a few
 components. This is followed by the results obtained, which quantify and provide
 evidence to
@@ -229,9 +229,9 @@ platform.
 A complete list of Canadian addresses has been provided and is used as frame for
 the survey. We follow stratified simple random sampling as our design, with each
 province as strata. The selection of candidates is by simple random sampling
-without replacement (SRSWOR). The selected candidate is sent an invitation registration
+without replacement (SRSWOR). The selected candidate is sent an invitation with registration
 steps. If the candidate accepts, we send
-an email with a link to the survey and upon competition, the survey redirects
+an email with a link to the survey and upon completion, the survey redirects
 users to a $5 CAD coupon reward. In the case the candidate does not accept, we draw another 
 candidate following the same SRSWOR method, this is repeated until the desired
 sample size of $n=10,000$ is reached. 
@@ -244,8 +244,7 @@ is
 where $n$ is the total sample size. Similarly, we compute the stratum weight,
 which is the relative size of the stratum within the overall population, a needed
 quantity for population parameter estimation. The stratum weight of province $h$ 
-is given by
-\[W_h=\frac{n_h}{n}\]
+is given by $W_h=n_h/n$
 where $n_h$ is as above [@wunthom]. A complete table of strata sample sizes
 and weights can be found in Table 1 in the Appendix.
 
@@ -272,7 +271,7 @@ following questions:
 Questions are presented in this order and not randomized given there is no 
 empirical result that either proves or disproves the efficiency of randomization.
 The actual wording of the questions is different than what is presented above, 
-however the language used is significantly less formal, done with the intention
+because the language used is significantly less formal, done with the intention
 of establishing a more conversational type interaction and
 yield higher response rates. The third question has the option to not provide
 an answer since we understand this might be a sensitive topic and could negatively
@@ -284,7 +283,7 @@ of the question which as a result makes them more likely to take this mental sho
 the literature as satisficing [@krosnick]. Consequently, question two is the only question 
 where this is allowed. 
 
-Logic is implemented to the survey in question 1, if the respondent is not an
+Logic is implemented to the survey for question 1, if the respondent is not an
 eligible voter then we only display questions four and five. Typeform fills
 missing values with _NA_ and will not be included in the analysis, since we
 are purposefully targeting eligible voters. All other questions are mandatory 
@@ -326,17 +325,17 @@ display the raw data simulated for this report.
 ```{r fig2, echo=FALSE, warning=FALSE, fig.height = 4, fig.width = 7, fig.align = "center", error=FALSE, message=FALSE, fig.cap="Answers for questions three and six."}
 
 ## The following code is used to generate plots for each question
-# Set percentages for question 2
+# Generate frequencies
 q2.plot.data <- data.clean %>%
   group_by(Q2) %>% summarise(count = n()) %>%
   mutate(perc = count / sum(count))
 
-# Set percentages for question 4
+# Generate frequencies
 q5.plot.data <- data.clean %>%
   group_by(Q5) %>% summarise(count = n()) %>%
   mutate(perc = count / sum(count))
 
-# Plot Fo
+#### PLOTS
 p2 <- ggplot(data=subset(q2.plot.data, !is.na(q2.plot.data$Q2)), aes(x=factor(Q2), y=perc*100)) +
   geom_bar(stat="identity", fill=I("darkorange4"), alpha = I(.9)) + 
   theme_light() + 
@@ -384,7 +383,7 @@ plot_grid(p2, p5)
 plot_grid(p3, p4)	
 ```
 \pagebreak
-Raw data shows that there is an important percentage of respondents that are choosing 
+The raw data shows that there is an important percentage of respondents that are choosing 
 to vote for another party which is not the Liberal party. Similarly more than half
 of respondents feel like the Canadian economy is moving in the wrong direction 
 or that is at a standstill. Moreover, approximately half of
@@ -396,7 +395,7 @@ Further analysis is required to support what the raw data shows at a glance.
 To properly estimate such population parameters we first require to calculate an
 unbiased estimator for the population mean. Consider the stratified sample mean, given by 
 \[\overline{y}_{st}=\sum_{h=1}^HW_h\overline{y}_h\]
-where $W_h$ is as in the previous section, the stratum weight, and $\overline{y}_h$
+where $W_h$, the stratum weight, is as in previous sections and $\overline{y}_h$
 the sample mean for stratum $h$. Sample mean of stratum $h$ is given by:
 \[\overline{y}_h=\frac{1}{n_h}\sum_{i\in S_h}y_i\]
 Here, $S_h$ is the sample corresponding to stratum $h$.
@@ -418,16 +417,16 @@ percentage of votes with which the Liberal party won the 2019 Canadian elections
 Similarly, we estimate that the current percentage of votes is 
 **`r round(q5.ybar*100, digits=2)`%** with a variance of `r round(q5.var * 100, digits=2)`%
 and a 90% confidence
-interval $[`r round(100*q5.ci.L, digits=2)`, `r round(100*q5.ci.U, digits=2)`]$. 
+interval $CI_{votes} = [`r round(100*q5.ci.L, digits=2)`, `r round(100*q5.ci.U, digits=2)`]$. 
 An approximate loss of `r round(100*(q2.ybar - q5.ybar), digits=2)`% of votes.
 
 
 Using the same method, we estimate that **`r round(100*q3.ybar, digits=2)`%**
 of Canadians feel the general economy is moving in the wrong direction, with a computed variance
-of `r round(100* q3.var, digits=2)`% and a 90% confidence interval [`r round(100*q3.ci.L, digits=2)`, 
-`r round(100*q3.ci.U, digits=2)`]. Similarly **`r round(100*q32.ybar, digits=2)`%**
+of `r round(100* q3.var, digits=2)`% and a 90% confidence interval $CI_{w}[`r round(100*q3.ci.L, digits=2)`, `r round(100*q3.ci.U, digits=2)`]$.
+Similarly **`r round(100*q32.ybar, digits=2)`%**
 of Canadians feel the economy is at a standstill, with a computed variance
-of `r round(100* q32.var, digits=2)`% and a 90% confidence interval $[`r round(100*q32.ci.L, digits=2)`, `r round(100*q32.ci.U, digits=2)`]$.
+of `r round(100* q32.var, digits=2)`% and a 90% confidence interval $CI_s[`r round(100*q32.ci.L, digits=2)`, `r round(100*q32.ci.U, digits=2)`]$.
 
 With these results, which support our original claim, we now discuss some of the 
 weaknesses of our approach. The most significant come from 
@@ -460,6 +459,35 @@ All code used in this project can be found at:
 
 The survey can be found at:
 
+- **https://cesaryvillarrealg.typeform.com/to/XX9vwSu5**
+
+
+### Data Modelling
+Taken from the executive report: Responses where simulated based on data collected from a list of news videos 
+in which a representative of the Liberal party either speaks about the economic
+situation due to the pandemic, or addresses the pandemic as a whole. 
+The videos used where from September and first week of October. 
+Data collected includes: _number of views_,
+_number of likes_, _number of dislikes_ and _number of comments_.
+Such data was obtained by calling the YouTube API using code previously 
+created for a web service. We have provided all code in the Github repository
+however the code is written in Python and requires an API key which is not hard
+to obtain. More instructions on how to obtain such key can be found in the README
+under the "scripts" folder. 
+
+Responses were mostly calculated based on the ratio of
+likes versus dislikes. The only exceptions are the 2019 vote choice question 
+which was sampled from a categorical distribution
+with each probability being the ratio of final votes in the 2019 Canadian federal
+election, and the eligibility question which was sampled from a Bernoulli distribution
+with probability of being eligible $p=0.9$. The important question, for what party
+would you vote if general elections where held tomorrow? Was modeled with the
+ratio of likes as the probability of choosing liberal and the ratio of dislikes
+was distributed among the other parties. More details can be found in the "scripts"
+folder.
+
+\pagebreak
+## Table of Sample Sizes and Weights
 ```{r, echo=FALSE}
 stratum <- data.frame(province = prov, weights = W_h, size = sizes)
 
@@ -467,11 +495,37 @@ stratum <- data.frame(province = prov, weights = W_h, size = sizes)
 knitr::kable(stratum, caption = "Stratum Sizes and Weights", align = "lcr",
       col.names = c("Province", "Stratum Weight", "Stratum Sample Size"), digits = 3)
 ```
-We present a set of screen shots of the survey created in Typeform
+\pagebreak
+
+## Screen shots
+![Landing screen](./other/f1.png)
+\pagebreak
+
+![Data privacy](./other/f2.png)
+\pagebreak
+
+![Question 1](./other/f3.png)
+\pagebreak
+
+![Question 2](./other/f4.png)
+\pagebreak
+
+![Question 3](./other/f5.png)
+\pagebreak
+
+![Question 4](./other/f6.png)
+\pagebreak
+
+![Question 5](./other/f7.png)
+\pagebreak
+
+![Question 6](./other/f8.png)
+\pagebreak
+
 
 
 ---
 nocite: '@*'
 ---
-\pagebreak
+
 ## References
