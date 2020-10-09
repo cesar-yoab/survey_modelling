@@ -1,13 +1,12 @@
-![Liberal Party](other/liberal.png)
+![Liberal Party](other/survey.png)
 
 # Experiment
-TODO...
-
+In this experiment we generate a report for a simulated study based on a survey we created.
 Survey can be found [here](https://cesarvillarrealg.typeform.com/to/XX9vwSu5)
+The process for modelling responses can be found in [here](https://github.com/cesar-yoab/survey_modelling/tree/main/scripts)
 
-https://arxiv.org/pdf/1902.07634.pdf
 
-# Sources
+# Useful links 
 1. [Population](https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1710000901)
 3. [YouTube API](https://developers.google.com/youtube/v3/docs/videos/list)
 4. [YouTube API keys](https://developers.google.com/youtube/v3/docs/?apix=true)
